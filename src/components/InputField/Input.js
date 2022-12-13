@@ -160,6 +160,20 @@ export const InputField = ({
             </div>
           </div>
         )}
+        {type === "checkbox" && (
+          <>
+            <Checkbox
+              inputId={id}
+              name={name}
+              value={value}
+              checked={checked}
+              onChange={onChange}
+            />
+            <label htmlFor={labelFor} className={className}>
+              {label}
+            </label>
+          </>
+        )}
       </span>
     </>
   );
