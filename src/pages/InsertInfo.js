@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { MultiSelect } from "primereact/multiselect";
 import { useFormik } from "formik";
 import { InputField } from "../components/InputField/Input";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { getSectors } from "../services/insertInfo";
+import { coreAxios } from "../utilities/axios";
 
 const InsertInfo = () => {
   const [selectedCities1, setSelectedCities1] = useState(null);
@@ -28,6 +31,15 @@ const InsertInfo = () => {
     },
     onSubmit: async (values) => {
       console.log("values", values);
+      try {
+        const res = await coreAxios.post(`usersDetailInfo`, values);
+        if (res?.status === 200) {
+          toast.success("Successfully Submitted");
+          formik.resetForm();
+        }
+      } catch (err) {
+        toast.error(err);
+      }
     },
     enableReinitialize: true,
   });
