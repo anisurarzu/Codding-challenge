@@ -22,7 +22,7 @@ function App() {
   ];
   return (
     <div className="App">
-      <div class="w-full h-auto overflow-scroll block h-screen bg-gradient-to-r  p-4 flex items-center justify-center">
+      {/*  <div class="w-full h-auto overflow-scroll block h-screen bg-gradient-to-r  p-4 flex  justify-center">
         <div class="bg-white py-6 px-10 sm:max-w-md w-full  shadow">
           <div class="sm:text-xl text-xl font-semibold text-center text-sky-600  mb-12 ">
             Please enter your name and pick the Sectors you are currently
@@ -30,18 +30,19 @@ function App() {
           </div>
           <div class="">
             <div>
-              <span className="p-float-label">
+              <span className="">
                 <InputText
+                  className="p-inputtext-sm"
                   id="username"
                   value={value2}
                   onChange={(e) => setValue2(e.target.value)}
                 />
-                <label htmlFor="username">Username</label>
               </span>
             </div>
 
             <div>
               <MultiSelect
+                className="p-inputtext-sm"
                 value={selectedCities1}
                 options={cities}
                 onChange={(e) => setSelectedCities1(e.value)}
@@ -60,6 +61,51 @@ function App() {
                 Submit
               </button>
             </div>
+          </div>
+        </div>
+      </div> */}
+
+      <div class="flex items-center justify-center h-screen">
+        <div class="min-w-fit flex-col border bg-white px-6 py-14 shadow-md rounded-[4px] ">
+          <div class="mb-8 flex justify-center">
+            <img
+              class="w-24"
+              src="https://assets.leetcode.com/static_assets/public/webpack_bundles/images/logo.c36eaf5e6.svg"
+              alt=""
+            />
+          </div>
+          <div class="flex flex-col text-sm rounded-md">
+            <input
+              class="mb-5 rounded-[4px] border p-3 hover:outline-none focus:outline-none hover:border-yellow-500 "
+              type="text"
+              placeholder="Username or Email id"
+            />
+            <MultiSelect
+              className="p-inputtext-sm"
+              value={selectedCities1}
+              options={cities}
+              onChange={(e) => setSelectedCities1(e.value)}
+              optionLabel="name"
+              placeholder="Select a City"
+              maxSelectedLabels={3}
+            />
+          </div>
+          <div class="flex pt-4">
+            <input type="checkbox" class="border-sky-400 " value="" />
+            <div class="px-3 text-gray-500">I accept terms & conditions</div>
+          </div>
+          <button
+            class="mt-5 w-full border p-2 bg-gradient-to-r from-gray-800 bg-gray-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
+            type="submit"
+          >
+            Save
+          </button>
+
+          <div class="mt-5 flex text-center text-sm text-gray-400">
+            <p>
+              Please enter your name and pick the Sectors you are currently
+              involved in.
+            </p>
           </div>
         </div>
       </div>
