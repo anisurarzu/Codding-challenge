@@ -11,6 +11,8 @@ import { Dropdown } from "primereact/dropdown";
 import { Skeleton } from "primereact/skeleton";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../App";
+import { Button } from "primereact/button";
+import Loader from "./loader/Loader";
 
 const UpdateInfo = () => {
   const { editedData, setEditedData } = useContext(AppContext);
@@ -18,6 +20,7 @@ const UpdateInfo = () => {
   const navigate = useNavigate();
   const [sectorList, setSectorList] = useState([]);
   const [isSave, setIsSave] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   console.log("editesData", editedData);
 
@@ -47,14 +50,18 @@ const UpdateInfo = () => {
         toast.error("Please Checked Terms & Conditions!");
       } else {
         try {
+          setLoading(true);
           const res = await coreAxios.put(`usersDetailInfo`, values);
           if (res?.status === 200) {
+            setLoading(false);
             toast.success("Successfully Updated");
             setIsSave(true);
             formik.resetForm();
             navigate("/viewInfo");
           }
+          setLoading(false);
         } catch (err) {
+          setLoading(false);
           toast.error(err);
         }
       }
@@ -64,8 +71,8 @@ const UpdateInfo = () => {
 
   return (
     <div>
+      {loading && <Loader />}
       <div class="flex items-center justify-center h-screen">
-        {/*  */}
         <div class="min-w-fit flex-col border bg-white px-6 py-14 shadow-md rounded-[4px] ">
           <div class="mb-8 flex justify-center">
             <h2 className="text-lg xl:text-l font-mono text-center py-2">
@@ -83,17 +90,7 @@ const UpdateInfo = () => {
                 value={formik.values.userName}
                 required
               />
-              {/* <MultiSelect
-                className="p-inputtext-sm"
-                options={sectorList}
-                name="sector"
-                optionLabel="sector"
-                placeholder="Select Sectors"
-                maxSelectedLabels={3}
-                onChange={formik.handleChange}
-                value={formik.values.sector}
-                required
-              /> */}
+
               <Dropdown
                 name="sector"
                 value={formik.values.sector}
@@ -103,7 +100,6 @@ const UpdateInfo = () => {
                 optionGroupLabel="label"
                 optionGroupChildren="items"
                 placeholder="Select Sectors"
-                // optionGroupTemplate={groupedItemTemplate}
               />
             </div>
             <div class="flex pt-4">

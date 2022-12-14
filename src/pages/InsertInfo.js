@@ -10,11 +10,13 @@ import { coreAxios } from "../utilities/axios";
 import { Dropdown } from "primereact/dropdown";
 import { Skeleton } from "primereact/skeleton";
 import { Link, useNavigate } from "react-router-dom";
+import Loader from "./loader/Loader";
 
 const InsertInfo = () => {
   const navigate = useNavigate();
   const [sectorList, setSectorList] = useState([]);
   const [isSave, setIsSave] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchAndGetSectorList();
@@ -43,14 +45,18 @@ const InsertInfo = () => {
         toast.error("Please Checked Terms & Conditions!");
       } else {
         try {
+          setLoading(true);
           const res = await coreAxios.post(`usersDetailInfo`, values);
           if (res?.status === 200) {
+            setLoading(false);
             toast.success("Successfully Save");
             setIsSave(true);
             formik.resetForm();
             navigate("/viewInfo");
           }
+          setLoading(false);
         } catch (err) {
+          setLoading(false);
           toast.error(err);
         }
       }
@@ -60,6 +66,7 @@ const InsertInfo = () => {
 
   return (
     <div>
+      {loading && <Loader />}
       <div class="flex items-center justify-center h-screen">
         {/*  */}
 
@@ -116,7 +123,7 @@ const InsertInfo = () => {
               <div class="px-3 text-gray-500">I accept terms & conditions</div>
             </div>
             <button
-              class="mt-5 w-full border p-2 bg-gradient-to-r from-green-800 bg-green-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
+              class="mt-5 w-full border p-2 bg-gradient-to-r from-green-800 bg-gray-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
               type="submit"
             >
               Save
@@ -131,7 +138,7 @@ const InsertInfo = () => {
           </div>
           <Link to="/viewInfo">
             <button
-              class="mt-5 w-full border p-2 bg-gradient-to-r from-blue-800 bg-blue-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
+              class="mt-5 w-full border p-2 bg-gradient-to-r from-gray-800 bg-gray-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
               // type="submit"
             >
               Vew Details
