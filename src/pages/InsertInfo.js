@@ -123,7 +123,7 @@ const InsertInfo = () => {
               <div class="px-3 text-gray-500">I accept terms & conditions</div>
             </div>
             <button
-              class="mt-5 w-full border p-2 bg-gradient-to-r from-green-800 bg-gray-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
+              class="mt-5 w-full border p-2 bg-gradient-to-r from-green-800 bg-green-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
               type="submit"
             >
               Save
@@ -138,7 +138,7 @@ const InsertInfo = () => {
           </div>
           <Link to="/viewInfo">
             <button
-              class="mt-5 w-full border p-2 bg-gradient-to-r from-gray-800 bg-gray-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
+              class="mt-5 w-full border p-2 bg-gradient-to-r from-blue-800 bg-blue-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
               // type="submit"
             >
               Vew Details
