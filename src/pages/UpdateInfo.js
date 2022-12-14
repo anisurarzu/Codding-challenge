@@ -11,7 +11,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Skeleton } from "primereact/skeleton";
 import { Link, useNavigate } from "react-router-dom";
 
-const InsertInfo = () => {
+const UpdateInfo = () => {
   const navigate = useNavigate();
   const [sectorList, setSectorList] = useState([]);
   const [isSave, setIsSave] = useState(false);
@@ -32,7 +32,6 @@ const InsertInfo = () => {
       userName: "",
       tnc: false,
       sector: "",
-      // sector: [{ sector: "Paris", id: "PRS" }],
     },
     onSubmit: async (values) => {
       console.log("values", values);
@@ -45,7 +44,7 @@ const InsertInfo = () => {
         try {
           const res = await coreAxios.post(`usersDetailInfo`, values);
           if (res?.status === 200) {
-            toast.success("Successfully Save");
+            toast.success("Successfully Updated");
             setIsSave(true);
             formik.resetForm();
             navigate("/viewInfo");
@@ -146,4 +145,4 @@ const InsertInfo = () => {
   );
 };
 
-export default InsertInfo;
+export default UpdateInfo;

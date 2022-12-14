@@ -9,11 +9,20 @@ import { InputText } from "primereact/inputtext";
 import { useState } from "react";
 import InsertInfo from "./pages/InsertInfo";
 import { ToastContainer } from "react-toastify";
+import ViewInfo from "./pages/ViewInfo";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
-      <InsertInfo />
+      <Router>
+        <Routes>
+          <Route path="viewInfo" element={<ViewInfo />} />
+          <Route path="viewInfo" element={<ViewInfo />} />
+          <Route path="/" element={<InsertInfo />} />
+        </Routes>
+      </Router>
+
       <ToastContainer
         position="top-right"
         autoClose={5000}
