@@ -39,7 +39,7 @@ function App() {
           pauseOnHover
           theme="light"
         />
-        {/* Same as */}
+
         <ToastContainer />
       </AppContext.Provider>
     </div>
