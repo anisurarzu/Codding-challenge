@@ -62,14 +62,11 @@ const InsertInfo = () => {
     <div>
       <div class="flex items-center justify-center h-screen">
         {/*  */}
+
         <div class="min-w-fit flex-col border bg-white px-6 py-14 shadow-md rounded-[4px] ">
-          <div class="mb-8 flex justify-center">
-            <img
-              class="w-24"
-              src="https://assets.leetid.com/static_assets/public/webpack_bundles/images/logo.c36eaf5e6.svg"
-              alt=""
-            />
-          </div>
+          <h2 className="text-lg xl:text-l font-mono text-center py-2">
+            Welcome To Challengers Home
+          </h2>
           <form className="" onSubmit={formik.handleSubmit}>
             <div class="flex flex-col text-sm rounded-md">
               <input
@@ -119,7 +116,7 @@ const InsertInfo = () => {
               <div class="px-3 text-gray-500">I accept terms & conditions</div>
             </div>
             <button
-              class="mt-5 w-full border p-2 bg-gradient-to-r from-gray-800 bg-gray-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
+              class="mt-5 w-full border p-2 bg-gradient-to-r from-green-800 bg-green-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
               type="submit"
             >
               Save
@@ -134,7 +131,7 @@ const InsertInfo = () => {
           </div>
           <Link to="/viewInfo">
             <button
-              class="mt-5 w-full border p-2 bg-gradient-to-r from-gray-800 bg-gray-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
+              class="mt-5 w-full border p-2 bg-gradient-to-r from-blue-800 bg-blue-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
               // type="submit"
             >
               Vew Details

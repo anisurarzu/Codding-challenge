@@ -1,14 +1,16 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Rating } from "primereact/rating";
 import { Button } from "primereact/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getUserInfo } from "../services/viewInfo";
 import { toast } from "react-toastify";
 import splitButtonTemp from "../components/actionButton/SplitButtonTemp";
+import { AppContext } from "../App";
 
 export default function ViewInfo() {
+  const { setEditedData } = useContext(AppContext);
   const [userInfo, setUserInfo] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -37,7 +39,11 @@ export default function ViewInfo() {
       </span>
     );
   };
-  const edit = () => {};
+  const edit = (rowData) => {
+    navigate(`/updateInfo/${rowData?._id}`);
+    console.log(rowData);
+    setEditedData(rowData);
+  };
 
   const actionBodyTemplate = (rowData) => {
     const buttonTemp = [
@@ -75,7 +81,7 @@ export default function ViewInfo() {
       <div className="flex justify-between py-2">
         <button
           onClick={() => {
-            navigate(-1);
+            navigate("/");
           }}
           class="m-4 border px-4 bg-gradient-to-r from-gray-800 bg-gray-500 text-white rounded-[4px] hover:bg-slate-400 "
           type="submit"
@@ -97,7 +103,7 @@ export default function ViewInfo() {
           paginatorLeft={paginatorLeft}
           paginatorRight={paginatorRight}
           value={userInfo}
-          header="Scroll"
+          header="Stored Information"
           responsiveLayout="scroll"
           loading={loading}
         >

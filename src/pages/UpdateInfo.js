@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MultiSelect } from "primereact/multiselect";
 import { useFormik } from "formik";
 import { InputField } from "../components/InputField/Input";
@@ -9,12 +9,17 @@ import { getSectors } from "../services/insertInfo";
 import { coreAxios } from "../utilities/axios";
 import { Dropdown } from "primereact/dropdown";
 import { Skeleton } from "primereact/skeleton";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { AppContext } from "../App";
 
 const UpdateInfo = () => {
+  const { editedData, setEditedData } = useContext(AppContext);
+  const { id } = useParams();
   const navigate = useNavigate();
   const [sectorList, setSectorList] = useState([]);
   const [isSave, setIsSave] = useState(false);
+
+  console.log("editesData", editedData);
 
   useEffect(() => {
     fetchAndGetSectorList();
@@ -29,9 +34,9 @@ const UpdateInfo = () => {
 
   const formik = useFormik({
     initialValues: {
-      userName: "",
-      tnc: false,
-      sector: "",
+      userName: editedData?.userName || "",
+      tnc: editedData?.tnc || "",
+      sector: editedData?.sector || "",
     },
     onSubmit: async (values) => {
       console.log("values", values);
@@ -42,7 +47,7 @@ const UpdateInfo = () => {
         toast.error("Please Checked Terms & Conditions!");
       } else {
         try {
-          const res = await coreAxios.post(`usersDetailInfo`, values);
+          const res = await coreAxios.put(`usersDetailInfo`, values);
           if (res?.status === 200) {
             toast.success("Successfully Updated");
             setIsSave(true);
@@ -63,11 +68,9 @@ const UpdateInfo = () => {
         {/*  */}
         <div class="min-w-fit flex-col border bg-white px-6 py-14 shadow-md rounded-[4px] ">
           <div class="mb-8 flex justify-center">
-            <img
-              class="w-24"
-              src="https://assets.leetid.com/static_assets/public/webpack_bundles/images/logo.c36eaf5e6.svg"
-              alt=""
-            />
+            <h2 className="text-lg xl:text-l font-mono text-center py-2">
+              Update User Info
+            </h2>
           </div>
           <form className="" onSubmit={formik.handleSubmit}>
             <div class="flex flex-col text-sm rounded-md">
@@ -118,10 +121,10 @@ const UpdateInfo = () => {
               <div class="px-3 text-gray-500">I accept terms & conditions</div>
             </div>
             <button
-              class="mt-5 w-full border p-2 bg-gradient-to-r from-gray-800 bg-gray-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
+              class="mt-5 w-full border p-2 bg-gradient-to-r from-yellow-800 bg-yellow-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
               type="submit"
             >
-              Save
+              Update
             </button>
           </form>
 
@@ -133,7 +136,7 @@ const UpdateInfo = () => {
           </div>
           <Link to="/viewInfo">
             <button
-              class="mt-5 w-full border p-2 bg-gradient-to-r from-gray-800 bg-gray-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
+              class="mt-5 w-full border p-2 bg-gradient-to-r from-blue-800 bg-blue-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
               // type="submit"
             >
               Vew Details
