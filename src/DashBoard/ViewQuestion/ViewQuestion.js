@@ -12,9 +12,7 @@ const ViewQuestion = () => {
   // console.log("orderid", orderId);
   console.log(questionId);
   useEffect(() => {
-    fetch(
-      `https://limitless-lowlands-32082.herokuapp.com/questions/${questionId}`
-    )
+    fetch(`https://yellow-sparkly-station.glitch.me/questions/${questionId}`)
       .then((res) => res.json())
       .then((data) => setQuestion(data));
   }, []);

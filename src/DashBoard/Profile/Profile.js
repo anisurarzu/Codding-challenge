@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import axios from "axios";
+import { toast } from "react-toastify";
 const Profile = () => {
   const { user, userInfo } = useAuth();
   console.log(user);
@@ -15,14 +16,11 @@ const Profile = () => {
       image: imageURL,
     };
     console.log({ userInfo });
-    fetch(
-      "https://limitless-lowlands-32082.herokuapp.com/users/profile/image",
-      {
-        method: "PUT",
-        headers: { "content-Type": "application/json" },
-        body: JSON.stringify(userInfo),
-      }
-    )
+    fetch("https://yellow-sparkly-station.glitch.me/users/profile/image", {
+      method: "PUT",
+      headers: { "content-Type": "application/json" },
+      body: JSON.stringify(userInfo),
+    })
       .then((res) => {
         console.log(res);
         // alert("image uploaded done");
@@ -50,6 +48,13 @@ const Profile = () => {
       .catch(function (error) {
         console.log(error);
       });
+  };
+  const updateProfile = async () => {
+    const res = await axios.post(``);
+    if (res?.status === 200) {
+      toast.succes("Successfully Update!");
+      window.location.reload();
+    }
   };
 
   return (
@@ -195,10 +200,9 @@ const Profile = () => {
                 </div>
 
                 <input
-                  className="p-4"
                   type="submit"
                   value="Upload Image"
-                  className="btn-design mt-4 px-2 rounded-full text-white"
+                  className=" p-4 btn-design mt-4 px-2 rounded-full text-white"
                 ></input>
               </form>
             </div>

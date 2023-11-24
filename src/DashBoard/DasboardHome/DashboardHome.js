@@ -1,77 +1,87 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { NewAppContext } from "../../App";
+import Card from "../../components/Card/Card";
+import Card2 from "../../components/Card2/Card2";
+import Loader from "../../components/Loader/Loader";
+import useAuth from "../../hooks/useAuth";
 import "./DashboardHome.css";
 
 const DashboardHome = () => {
+  const { userInfo } = useAuth();
+  const { depositInfo, setDepositInfo } = useContext(NewAppContext);
+  const [depositInfo2, setDepositInfo2] = useState([]);
+  const [dmfBalance, setDmfBalance] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    /* https://yellow-sparkly-station.glitch.me/ */
+    try {
+      setLoading(true);
+      fetch(`https://yellow-sparkly-station.glitch.me/deposit`)
+        .then((res) => res.json())
+        .then((data) => {
+          setLoading(false);
+          setDmfBalance(data);
+          // console.log("event data", data[0].email);
+          if (userInfo?.payRole === "finance") {
+            setDepositInfo(data);
+            setDepositInfo2(data);
+          } else {
+            const filteredData = data?.filter(
+              (d) => d?.email === userInfo?.email
+            );
+            setDepositInfo(filteredData);
+            setDepositInfo2(filteredData);
+          }
+        });
+    } catch (err) {
+      setLoading(false);
+      toast.error(err);
+    }
+  }, []);
+  // calculate deposit amount
+
+  const depositAmount = [];
+  const dmfDepositAmount = [];
+
+  depositInfo2?.map((data) => {
+    if (data?.status === "Accepted") {
+      depositAmount?.push(data?.depositAmount);
+    }
+  });
+  dmfBalance?.map((data) => {
+    if (data?.status === "Accepted") {
+      dmfDepositAmount?.push(data?.depositAmount);
+    }
+  });
+
+  const totalDeposit =
+    depositAmount.length > 0 &&
+    depositAmount?.reduce((prev, curr) => parseFloat(prev) + parseFloat(curr));
+  const totalDmfDeposit =
+    dmfDepositAmount.length > 0 &&
+    dmfDepositAmount?.reduce(
+      (prev, curr) => parseFloat(prev) + parseFloat(curr)
+    );
+  console.log("totalDmfDeposit", totalDmfDeposit);
+
   return (
     <div className="">
-      <main class="flex-1 overflow-x-hidden overflow-y-auto ">
-        <div class="container mx-auto px-6 py-8">
-          <div class="mt-2">
-            <div class="flex flex-wrap -mx-6">
-              <div class="w-full px-6 sm:w-1/2 xl:w-1/3">
-                <div class="flex items-center px-5 py-6 shadow-sm rounded-md bg-white">
-                  <div class="mx-5 ">
-                    <div className="flex justify-center">
-                      <img
-                        className="w-2/4"
-                        src=" https://i.ibb.co/8KyGhPG/question.png"
-                        alt=""
-                      />
-                    </div>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div>
+          <div className="grid grid-cols-1 xl:grid-cols-3 lg:grid-cols-3 gap-4 mt-2">
+            <Card title={"My Current Balance"} amount={totalDeposit} />
+            <Card title={"Project Budget"} />
+            <Card title={"DMF Total Cost"} />
 
-                    <h4 class="text-2xl font-semibold text-gray-700">8,282</h4>
-                    <div class="text-gray-500">Questions</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="w-full mt-6 px-6 sm:w-1/2 xl:w-1/3 sm:mt-0">
-                <div class="flex items-center px-5 py-6 shadow-sm rounded-md bg-white">
-                  <div class="mx-5">
-                    <div className="flex justify-center">
-                      <img
-                        className="w-2/4"
-                        src="https://i.ibb.co/CQ6cw5j/answer.png"
-                        alt=""
-                      />
-                    </div>
-                    <h4 class="text-2xl font-semibold text-gray-700">
-                      200,521
-                    </h4>
-                    <div class="text-gray-500">Answers</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="w-full mt-6 px-6 sm:w-1/2 xl:w-1/3 xl:mt-0">
-                <div class="flex items-center px-5 py-6 shadow-sm rounded-md bg-white">
-                  <div class="mx-5">
-                    <div className="flex justify-center">
-                      <img
-                        className="w-2/4"
-                        src="https://i.ibb.co/7Gz9MCh/time-management.png"
-                        alt=""
-                      />
-                    </div>
-
-                    <h4 class="text-2xl font-semibold text-gray-700">
-                      215,542
-                    </h4>
-                    <div class="text-gray-500">Events</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div></div>
           </div>
+          <Card2 amount={totalDmfDeposit} />
         </div>
-      </main>
-      {/* <div>
-        <img
-          className="w-1/6"
-          src="https://c.tenor.com/2oxcBlG5vf4AAAAi/asslamo-alikum.gif"
-          alt=""
-        />
-      </div> */}
+      )}
     </div>
   );
 };

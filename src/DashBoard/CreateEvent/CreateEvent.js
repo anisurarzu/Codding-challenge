@@ -8,9 +8,9 @@ const CreateEvent = () => {
   const [message, setMessage] = useState("");
   const { register, reset, handleSubmit } = useForm();
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
     axios
-      .post("https://limitless-lowlands-32082.herokuapp.com/events", data)
+      .post("https://yellow-sparkly-station.glitch.me/events", data)
       .then((res) => {
         if (res.data.insertedId) {
           setMessage("Your event created SuccessFully!");

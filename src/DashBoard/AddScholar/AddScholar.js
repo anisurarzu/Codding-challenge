@@ -7,7 +7,7 @@ const AddScholar = () => {
   const [scholarId, setScholarId] = useState("");
   console.log(scholarId);
   useEffect(() => {
-    fetch("https://limitless-lowlands-32082.herokuapp.com/scholarId")
+    fetch("https://yellow-sparkly-station.glitch.me/scholarId")
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
@@ -18,7 +18,7 @@ const AddScholar = () => {
     console.log(data);
 
     if (data.iFb_id === scholarId) {
-      fetch("https://limitless-lowlands-32082.herokuapp.com/users/scholar", {
+      fetch("https://yellow-sparkly-station.glitch.me/users/scholar", {
         method: "PUT",
         headers: {
           "content-type": "application/json",

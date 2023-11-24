@@ -7,9 +7,7 @@ const HeroSection = () => {
     <div className="hero-container ">
       <div className="grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-2 gap-4 ">
         <div className="py-12 first-width pt-28">
-          <button className="p-2 bangla-text animate-pulse xl:mr-96 lg:mr-96 xl:ml-12 lg:ml-12 btn-text px-4 bg-white rounded-full">
-            ইসলামকে জানুন
-          </button>
+          <button className="p-2 bangla-text  xl:mr-96 lg:mr-96 xl:ml-12 lg:ml-12 btn-text px-4 bg-white rounded-full"></button>
           <div className="p-text xl:py-16 lg:py-16 py-8">
             <h2 className=" text-left pl-6 text-2xl xl:text-5xl lg:text-5xl font-bold xl:pl-20 lg:pl-20">
               Read! In the Name of Almighty Allah, Who has created
@@ -30,7 +28,8 @@ const HeroSection = () => {
         <div className="xl:py-16 xl:mt-8 lg:mt-8 lg:py-16 px-20 img-design relative">
           <div className="absolute img-border" />
           <img
-            className="hero hero-img "
+            className="hero hero-img transition-all  duration-100  "
+            // animate-bounce
             src={hero}
             alt="Mother with his child"
           />

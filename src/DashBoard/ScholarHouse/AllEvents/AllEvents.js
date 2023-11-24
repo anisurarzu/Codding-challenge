@@ -11,12 +11,12 @@ const AllEvents = () => {
 
   let email = user?.email;
   useEffect(() => {
-    fetch("https://limitless-lowlands-32082.herokuapp.com/events")
+    fetch("https://yellow-sparkly-station.glitch.me/events")
       .then((res) => res.json())
       .then((data) => {
-        console.log("event data", data[0].email);
-        const event = data.filter((data) => data?.email === email);
-        setEvents(event);
+        // console.log("event data", data[0].email);
+        // const event = data.filter((data) => data?.email === email);
+        setEvents(data);
         // console.log(event);
       });
   }, []);
@@ -26,7 +26,7 @@ const AllEvents = () => {
     const check = window.confirm("Are you sure,you want to delete this event?");
 
     if (check) {
-      const url = `https://limitless-lowlands-32082.herokuapp.com/event/${id}`;
+      const url = `https://yellow-sparkly-station.glitch.me/event/${id}`;
       fetch(url, {
         method: "DELETE",
       })
@@ -35,11 +35,12 @@ const AllEvents = () => {
           if (result.deletedCount > 0) {
             const restEvent = events.filter((event) => event._id !== id);
             setEvents(restEvent);
-            setMessage("Your question deleted Successfully!");
+            setMessage("Your event deleted Successfully!");
           }
         });
     }
   };
+  console.log(events);
   return (
     <div className="event-container pt-12">
       <h2 className="text-xl xl:text-2xl lg:text-2xl ">My Events</h2>

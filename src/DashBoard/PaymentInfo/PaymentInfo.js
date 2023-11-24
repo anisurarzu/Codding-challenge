@@ -9,7 +9,7 @@ const PaymentInfo = () => {
   //   console.log(payment);
 
   useEffect(() => {
-    fetch("https://limitless-lowlands-32082.herokuapp.com/paymentInfo")
+    fetch("https://yellow-sparkly-station.glitch.me/paymentInfo")
       .then((res) => res.json())
       .then((data) => {
         /* const question = data.filter((data) => data.email === user?.email); */
