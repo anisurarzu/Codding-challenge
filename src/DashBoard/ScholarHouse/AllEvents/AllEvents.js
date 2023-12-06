@@ -49,8 +49,7 @@ const AllEvents = () => {
         {events?.map((event) => (
           <div
             key={event?.id}
-            className="mt-8 relative grid grid-cols-1 xl:flex lg:flex mx-2  shadow-md rounded"
-          >
+            className="mt-8 relative grid grid-cols-1 xl:flex lg:flex mx-2  shadow-md rounded">
             {/* <img
               className="w-full xl:w-2/5 lg:w-2/5 object-cover  "
               src=""
@@ -86,8 +85,7 @@ const AllEvents = () => {
                     type="button"
                     data-bs-toggle="modal"
                     data-bs-target="#staticBackdrop"
-                    className=" "
-                  >
+                    className=" ">
                     <i class="fas fa-info-circle "></i>
                   </button>
                 </Link>

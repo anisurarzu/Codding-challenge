@@ -11,21 +11,19 @@ const Header = () => {
   const [showModal, setShowModal] = useState(false);
   return (
     <Fragment>
-      <nav class=" container navbar-container navbar navbar-expand-lg navbar-light bg-white shadow-md rounded-xl ">
+      <nav class="navbar-container navbar navbar-expand-lg navbar-light bg-white shadow-md rounded-xl ">
         <div class="container-fluid">
           <div className="">
             <Link to="/home">
               <img
-                className="w-14 animate-spin
+                className="w-36 h-12  bg-black
               "
-                src="https://i.ibb.co/BC3zhmc/Dmf-Only-Icon.png"
+                src={"https://i.ibb.co/gF9pHJb/logo-removebg-preview.png"}
                 alt=""
               />
             </Link>
           </div>
-          <Link to="/home">
-            <p className="title text-xl ml-2 ">দারুল মুত্তাক্বীন ফাউন্ডেশন</p>
-          </Link>
+
           <button
             class="navbar-toggler"
             type="button"
@@ -33,12 +31,11 @@ const Header = () => {
             data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent"
             aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
+            aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 bangla-text">
+            {/* <ul class="navbar-nav me-auto mb-2 mb-lg-0 bangla-text">
               <li class="nav-item">
                 <Link class="nav-link active " aria-current="page" to="/home">
                   হোম
@@ -90,27 +87,7 @@ const Header = () => {
                   যোগাযোগ
                 </Link>
               </li>
-              <li class="nav-item">
-                <Link
-                  class="nav-link"
-                  to="/quize"
-                  tabindex="-1"
-                  aria-disabled="true"
-                >
-                  কুইজ
-                </Link>
-              </li>
-              <li class="nav-item">
-                <Link
-                  class="nav-link"
-                  to="/shop"
-                  tabindex="-1"
-                  aria-disabled="true"
-                >
-                  দোকান
-                </Link>
-              </li>
-            </ul>
+            </ul> */}
             {user?.email && (
               <span className="user-details pl-8 text-gray-600">
                 {user?.displayName}
@@ -123,8 +100,7 @@ const Header = () => {
                   type="button"
                   id="dropdownMenuButton1"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
+                  aria-expanded="false">
                   <img
                     className="w-8 h-8  rounded-full phone-screen-class"
                     src={
@@ -149,28 +125,12 @@ const Header = () => {
                 </ul>
               </div>
             )}
-            <Link to="/shop">
-              <ul>
-                {/* icon k button hisebe use kara hoise */}
-
-                <i
-                  onClick={() => setShowModal(true)}
-                  className="shopping-icons fas fa-shopping-cart text-2xl pr-4  cart mr-0  shopping-cart1"
-                >
-                  {" "}
-                  <p className="cart-length">{items.length}</p>{" "}
-                </i>
-
-                {/* <i className=" font-bold ml-1 mt-2">{items.length}</i> */}
-              </ul>
-            </Link>
 
             <div>
               {user?.email ? (
                 <button
                   className="ml-8 text-sm pb-2 btn-donate text-white rounded-full  px-4 p-2 phone-screen-class"
-                  onClick={logOut}
-                >
+                  onClick={logOut}>
                   লগ আউট
                 </button>
               ) : (
@@ -187,8 +147,7 @@ const Header = () => {
       {/* card modal pop */}
       <CartModal
         isVisible={showModal}
-        onCloce={() => setShowModal(false)}
-      ></CartModal>
+        onCloce={() => setShowModal(false)}></CartModal>
     </Fragment>
   );
 };

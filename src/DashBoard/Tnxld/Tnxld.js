@@ -79,12 +79,10 @@ export default function Tnxld() {
 
           <form
             className="w-full max-w-lg flex flex-col justify-center text-center  ml-auto mr-auto"
-            onSubmit={handleSubmit(onSubmit)}
-          >
+            onSubmit={handleSubmit(onSubmit)}>
             <label
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 text-left ml-1 "
-              htmlFor="name"
-            >
+              htmlFor="name">
               Transaction ID
             </label>
             <input

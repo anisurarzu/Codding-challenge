@@ -42,8 +42,7 @@ const MakeAdmin = () => {
         <br />
         <button
           className="btn-design my-4 px-2 rounded-full text-white"
-          type="submit"
-        >
+          type="submit">
           Make Admin
         </button>
       </form>

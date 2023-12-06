@@ -6,23 +6,47 @@ import { Alert } from "antd";
 import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 import "./SendQuestion.css";
+import { toast } from "react-toastify";
+import { Button } from "primereact/button";
+import { useEffect } from "react";
+import { checkExistsOrNot, checkExitsOrNot } from "../../utils/checkExistOrNot";
 const SendQuestion = () => {
-  const { register, reset, handleSubmit } = useForm();
-  const [message, setMessage] = useState("");
-  const onSubmit = (data) => {
-    console.log(data, "form");
-    setMessage("");
-    axios
-      .post("https://yellow-sparkly-station.glitch.me/questions", data)
-      .then((res) => {
-        if (res.data.insertedId) {
-          setMessage("Your question submitted SuccessFully!");
-          reset();
-          window.location.replace("/dashboard/myquestions");
-        }
-      });
-  };
   const { user } = useAuth();
+  const { register, reset, handleSubmit } = useForm();
+  const [brandList, setBrandList] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getBrandList();
+  }, []);
+
+  const getBrandList = async () => {};
+  //https://yellow-sparkly-station.glitch.me/
+
+  const onSubmit = async (data) => {
+    console.log(data, "form");
+    const isBrandExits = await checkExistsOrNot("questions", data?.name);
+    console.log("isBrandExits", isBrandExits);
+    if (isBrandExits) {
+      toast.error("Can not add same brand !");
+    } else {
+      try {
+        setLoading(true);
+        await axios
+          .post("https://yellow-sparkly-station.glitch.me/questions", data)
+          .then((res) => {
+            if (res.data.insertedId) {
+              setLoading(false);
+              toast.success("Successfully Added!");
+              reset();
+            }
+          });
+      } catch (err) {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <div className="p-4 send-container  xl:ml-12 lg:ml-12">
       {/* <h5>Send Your Question With Valid Information!</h5>
@@ -38,22 +62,20 @@ const SendQuestion = () => {
       {
         <form
           className="w-full max-w-lg flex flex-col justify-center text-center  ml-auto mr-auto"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+          onSubmit={handleSubmit(onSubmit)}>
           <label
             className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 text-left ml-1 "
-            for="grid-first-name"
-          >
-            Name
+            for="grid-first-name">
+            Brand Name
           </label>
           <input
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
             {...register("name")}
-            defaultValue={user.displayName}
-            placeholder="enter your name"
+            defaultValue={""}
+            placeholder="Enter Brand Name"
             required
           />
-          <label
+          {/* <label
             className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 text-left ml-1 "
             htmlFor="name"
           >
@@ -92,11 +114,8 @@ const SendQuestion = () => {
             <option value="male">male</option>
             <option value="female">female</option>
             <option value="other">other</option>
-          </select>
-          <input
-            className="py-2 rounded mt-4 service-btn text-white"
-            type="submit"
-          />
+          </select> */}
+          <Button type="submit" label="Submit" loading={loading} />
         </form>
       }
       {/*  <div className="text-white md:shadow md:shadow-md rounded-md question-from">

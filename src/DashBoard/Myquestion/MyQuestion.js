@@ -4,103 +4,199 @@ import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
 import "./MyQuestion.css";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Button } from "primereact/button";
+import splitButtonTemp from "../../components/SplitButton/SplitButtonTemp";
+import { toast } from "react-toastify";
+import axios from "axios";
+import OrderDetails from "./OrderDetails/OrderDetails";
 
 const MyQuestion = () => {
   const [questions, setQuestions] = useState();
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [brandsForFilter, setBrandsForFilter] = useState([]);
+
   const { user } = useAuth();
   let email = user?.email;
   useEffect(() => {
-    fetch("https://yellow-sparkly-station.glitch.me/questions")
-      .then((res) => res.json())
-      .then((data) => {
-        const question = data.filter((data) => data.email === email);
-        setQuestions(question);
-        console.log(question);
-      });
+    getQuestions();
   }, []);
-
-  const handleDeleteQuestion = (id) => {
-    const check = window.confirm(
-      "Are you sure,you want to delete this question?"
-    );
-
-    if (check) {
-      const url = `https://yellow-sparkly-station.glitch.me/questions/${id}`;
-      fetch(url, {
-        method: "DELETE",
-      })
+  const getQuestions = () => {
+    try {
+      setLoading(true);
+      fetch("https://yellow-sparkly-station.glitch.me/questions")
         .then((res) => res.json())
-        .then((result) => {
-          if (result.deletedCount > 0) {
-            const restQuestion = questions.filter(
-              (question) => question._id !== id
-            );
-            setQuestions(restQuestion);
-            setMessage("Your question deleted Successfully!");
-          }
+        .then((data) => {
+          setLoading(false);
+          const sortedArray = data.sort((a, b) => a.name.localeCompare(b.name));
+          // const question = data.filter((data) => data.email === email);
+          setQuestions(sortedArray);
+          setBrandsForFilter(data);
+          // console.log(question);
         });
+    } catch (err) {}
+  };
+
+  // searching method
+  const handleSearch = (event) => {
+    const searchText = event.target.value;
+    if (searchText) {
+      const matchedDetails = questions?.filter(
+        (details) =>
+          details?._id?.includes(searchText) ||
+          details?.name?.includes(searchText)
+      );
+      setQuestions(matchedDetails);
+    } else {
+      // setQuestions(depositInfo2);
+      setQuestions(brandsForFilter);
     }
   };
-  return (
-    <div className="question-container">
-      <h1 className="text-2xl heading-text  py-2">
-        Questions: {questions?.length}
-      </h1>
-      <span>{message}</span>
-
-      <div className="w-4/5 mx-auto">
-        <div className="bg-white  rounded my-2">
-          <table className="text-left w-full border-collapse">
-            <thead>
-              <tr>
-                <th className="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
-                  Questions
-                </th>
-                <th className="py-4  pl-2 xl:px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {questions?.map((question) => (
-                <tr key={question._id} className="hover:bg-gray-100">
-                  <td className="py-4 xl:px-6 border-b border-grey-light">
-                    {question.question}
-                  </td>
-
-                  <td className="py-4 xl:px-6 border-b border-grey-light flex">
-                    <Link
-                      to={`/viewquestion/${question._id}`}
-                      className="text-white font-bold py-1 px-3 mr-1 rounded text-xs bg-green-500 hover:bg-green-600"
-                    >
-                      View
-                    </Link>
-                    {/* <button
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      className="text-white font-bold py-1 px-3  rounded text-xs bg-red-500 hover:bg-red-600"
-                    >
-                      <i class="far fa-trash-alt"></i>
-                    </button> */}
-                    <button
-                      className="text-white font-bold py-1 px-3  rounded text-xs bg-red-500 hover:bg-red-600"
-                      onClick={() => handleDeleteQuestion(question._id)}
-                    >
-                      <i class="far fa-trash-alt"></i>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* modal */}
-
-        {/* modal */}
+  const imageBodyTemplate = (rowData) => {
+    return (
+      <div className="p-multiselect-representative-option flex items-center ">
+        <img
+          className="rounded-full"
+          alt={""}
+          src={rowData?.image}
+          onError={(e) =>
+            (e.target.src =
+              "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+          }
+          width={32}
+          style={{ verticalAlign: "middle" }}
+        />
+        <span className="image-text pl-2">{rowData?.displayName}</span>
       </div>
+    );
+  };
+  const deleteBrand = async (rowData) => {
+    try {
+      setLoading(true);
+      const res = await axios.delete(
+        `https://yellow-sparkly-station.glitch.me/questions/${rowData?._id}`
+      );
+      if (res?.status === 200) {
+        getQuestions();
+        toast.success("Successfully Deleted");
+        setLoading(false);
+      }
+    } catch (err) {}
+  };
+  const actionBodyTemplate = (rowData) => {
+    const buttonTemp = [
+      {
+        label: "Details",
+        icon: "pi pi-file",
+        command: (e) => {},
+      },
+    ];
+    return (
+      <>
+        {splitButtonTemp(
+          rowData,
+          {
+            defaultFunc: deleteBrand,
+            defaultLabel: "Delete",
+            defaultColor: "button",
+            defaultIcon: "pi pi-trash",
+          },
+          buttonTemp
+        )}
+      </>
+    );
+  };
+
+  const statusBodyTemplate = (rowData) => {
+    return (
+      <div>
+        <span
+          className={`${
+            rowData?.status === "Accepted"
+              ? "text-green-500"
+              : "text-yellow-500"
+          }`}>
+          {rowData?.status}
+        </span>
+      </div>
+    );
+  };
+  const dateBodyTemplate = (rowData) => {
+    return (
+      <div>
+        <span>{rowData?.date?.slice(0, 10)}</span>
+      </div>
+    );
+  };
+  const paginatorLeft = (
+    <Button type="button" icon="pi pi-refresh" className="p-button-text" />
+  );
+  const paginatorRight = (
+    <Button type="button" icon="pi pi-cloud" className="p-button-text" />
+  );
+
+  return (
+    <div>
+      {/*  {userInfo?.payRole === "member" && (
+          <Progress depositInfo={depositInfo} />
+        )} */}
+      <div class="flex bg-gray-50 items-center p-2 rounded-md my-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-gray-400"
+          viewBox="0 0 20 20"
+          fill="currentColor">
+          <path
+            fill-rule="evenodd"
+            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <input
+          onChange={handleSearch}
+          className="bg-gray-50 outline-none ml-1 block  w-full"
+          type="text"
+          name=""
+          id=""
+          placeholder="search...by _id or name"
+        />
+      </div>
+
+      <DataTable
+        tableStyle={{ minHeight: "10rem" }}
+        paginator
+        paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+        rows={10}
+        rowsPerPageOptions={[10, 20, 50]}
+        paginatorLeft={paginatorLeft}
+        paginatorRight={paginatorRight}
+        value={questions}
+        header="Brand Information"
+        responsiveLayout="scroll"
+        loading={loading}
+        showGridlines>
+        {/* <Column
+          header="User"
+          filterField="representative"
+          showFilterMatchModes={false}
+          filterMenuStyle={{ width: "5rem" }}
+          style={{ minWidth: "0.5rem" }}
+          body={imageBodyTemplate}
+        /> */}
+
+        {/* <Column field="_id" header="Brand ID" /> */}
+        <Column field="name" header="Brand Name" />
+        <Column
+          header="Action"
+          filterField="representative"
+          showFilterMatchModes={false}
+          body={actionBodyTemplate}
+          className="w-4 h-2"
+        />
+      </DataTable>
     </div>
   );
 };

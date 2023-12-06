@@ -11,44 +11,46 @@ import { DataTable } from "primereact/datatable";
 import { Button } from "primereact/button";
 import { toast } from "react-toastify";
 import { splitButtonTemp } from "../../components/SplitButton/SplitButtonTemp";
+import UpdateStatus from "./UpdateStatus";
+import axios from "axios";
 
 export default function Finance() {
   const { depositInfo, setDepositInfo } = useContext(NewAppContext);
   const [loading, setLoading] = useState(false);
   const [depositInfo2, setDepositInfo2] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [updateData, setUpdateData] = useState([]);
   const { userInfo } = useAuth();
 
   useEffect(() => {
+    getOrderList();
     //https://yellow-sparkly-station.glitch.me/
+    // https://yellow-sparkly-station.glitch.me
+  }, []);
+  const getOrderList = async () => {
     try {
-      setLoading(true);
-      fetch(`https://yellow-sparkly-station.glitch.me/deposit`)
-        .then((res) => res.json())
-        .then((data) => {
-          setLoading(false);
-          // console.log("event data", data[0].email);
-          if (userInfo?.payRole === "finance") {
-            const latestData = data.sort(
-              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-            );
-            setDepositInfo(latestData);
-            setDepositInfo2(latestData);
-          } else {
-            const filteredData = data?.filter(
-              (d) => d?.email === userInfo?.email
-            );
-            const latestData = filteredData.sort(
-              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-            );
-            setDepositInfo(latestData);
-            setDepositInfo2(latestData);
-          }
-        });
+      const res = await axios.get(
+        `https://yellow-sparkly-station.glitch.me/deposit`
+      );
+      if (res?.status === 200) {
+        setLoading(false);
+        const sortedData = res?.data?.sort(
+          (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
+        );
+
+        const filteredDataWithStatus = sortedData.filter(
+          (item) => item.status !== "Remove"
+        );
+        // console.log("event data", data[0].email);
+        setDepositInfo(filteredDataWithStatus);
+        setDepositInfo2(filteredDataWithStatus);
+        setLoading(false);
+      }
     } catch (err) {
       setLoading(false);
       toast.error(err);
     }
-  }, []);
+  };
 
   // searching method
   const handleSearch = (event) => {
@@ -56,8 +58,8 @@ export default function Finance() {
     if (searchText) {
       const matchedDetails = depositInfo?.filter(
         (details) =>
-          details?.dmfID?.includes(searchText) ||
-          details?.transactionID?.includes(searchText)
+          details?.serialNo?.includes(searchText) ||
+          details?.customerName?.includes(searchText)
       );
       setDepositInfo(matchedDetails);
     } else {
@@ -69,39 +71,32 @@ export default function Finance() {
       <span
         className={`product-badge status-${
           rowData.inventoryStatus ? rowData.inventoryStatus.toLowerCase() : ""
-        }`}
-      >
+        }`}>
         {rowData.inventoryStatus}
       </span>
     );
   };
-  const edit = (rowData) => {};
+  const edit = (rowData) => {
+    setShowForm(true);
+    setUpdateData(rowData);
+  };
 
-  const actionBodyTemplate = (rowData) => {
-    const buttonTemp = [
-      {
-        label: "Edit",
-        icon: "",
-        command: (e) => {
-          edit(rowData);
-        },
-      },
-    ];
+  const actionButton = (rowData) => {
     return (
-      <>
-        {splitButtonTemp(
-          rowData,
-          {
-            defaultFunc: "",
-            defaultLabel: "Actions",
-            defaultColor: "button",
-            defaultIcon: "",
-          },
-          buttonTemp
-        )}
-      </>
+      <div className="flex justify-center items-center">
+        <Button
+          loading={loading}
+          type="submit"
+          className={`p-button-success w-8 h-4`}
+          title="Return"
+          label="Return"
+          icon="pi pi-pencil"
+          onClick={() => edit(rowData)}
+        />
+      </div>
     );
   };
+
   const paginatorLeft = (
     <Button type="button" icon="pi pi-refresh" className="p-button-text" />
   );
@@ -132,10 +127,13 @@ export default function Finance() {
         <span
           className={`${
             rowData?.status === "Accepted"
-              ? "text-green-500"
-              : "text-yellow-500"
-          }`}
-        >
+              ? "text-blue-600"
+              : rowData?.status === "Rejected"
+              ? "text-red-600"
+              : rowData?.status === "Refund"
+              ? "text-yellow-300"
+              : "text-green-600"
+          }`}>
           {rowData?.status}
         </span>
       </div>
@@ -144,24 +142,37 @@ export default function Finance() {
   const dateBodyTemplate = (rowData) => {
     return (
       <div>
-        <span>{rowData?.date.slice(0, 10)}</span>
+        <span>{rowData?.orderDate?.slice(0, 10)}</span>
       </div>
     );
+  };
+  const dateBodyTemplate2 = (rowData) => {
+    return (
+      <div>
+        <span>{rowData?.deliveryDate?.slice(0, 10)}</span>
+      </div>
+    );
+  };
+
+  const hideModal = async () => {
+    setShowForm(false);
+    getOrderList();
+
+    // setRowData(false);
   };
 
   return (
     <div>
       <div>
-        {userInfo?.payRole === "member" && (
+        {/*  {userInfo?.payRole === "member" && (
           <Progress depositInfo={depositInfo} />
-        )}
+        )} */}
         <div class="flex bg-gray-50 items-center p-2 rounded-md my-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5 text-gray-400"
             viewBox="0 0 20 20"
-            fill="currentColor"
-          >
+            fill="currentColor">
             <path
               fill-rule="evenodd"
               d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
@@ -174,7 +185,7 @@ export default function Finance() {
             type="text"
             name=""
             id=""
-            placeholder="search...by dmfID or transactionID"
+            placeholder="search...by SL No or Customer Name"
           />
         </div>
 
@@ -187,28 +198,79 @@ export default function Finance() {
           paginatorLeft={paginatorLeft}
           paginatorRight={paginatorRight}
           value={depositInfo}
-          header="Deposit Information"
+          header="Order Information"
           responsiveLayout="scroll"
           loading={loading}
-          showGridlines
-        >
+          scrollable>
           <Column
-            header="User"
-            filterField="representative"
-            showFilterMatchModes={false}
-            filterMenuStyle={{ width: "10rem" }}
-            style={{ minWidth: "0.5rem" }}
-            body={imageBodyTemplate}
+            field="serialNo"
+            header="SL NO."
+            style={{ minWidth: "100px" }}
+          />
+          <Column
+            field="customerName"
+            header="Customer"
+            className="text-sm"
+            style={{ minWidth: "150px" }}
+          />
+          <Column
+            className="text-sm"
+            field="brandName"
+            header="Brand"
+            style={{ minWidth: "150px" }}
+          />
+          <Column
+            className="text-sm"
+            field="modelName"
+            header="Model"
+            style={{ minWidth: "150px" }}
+          />
+          <Column
+            className="text-sm"
+            field="problemName"
+            header="Problem"
+            style={{ minWidth: "200px" }}
+          />
+          <Column
+            className="text-sm"
+            field="warrantyName"
+            header="Warranty"
+            style={{ minWidth: "130px" }}
+          />
+          <Column
+            className="text-sm"
+            field="serviceCost"
+            header="Service Cost"
+            style={{ minWidth: "150px" }}
           />
 
-          <Column field="depositAmount" header="Deposit Amount" />
-          <Column field="dmfID" header="DMF ID" />
-          <Column field="transactionID" header="Transaction ID" />
-          <Column field="date" header="Date" body={dateBodyTemplate} />
-          <Column field="paymentType" header="Method" />
+          <Column
+            field="engineerName"
+            header="Engineer"
+            style={{ minWidth: "150px" }}
+          />
+          <Column
+            field="orderDate"
+            header="Receive Date"
+            body={dateBodyTemplate}
+            style={{ minWidth: "150px" }}
+          />
+          <Column
+            field="deliveryDate"
+            header="Delivery Date"
+            body={dateBodyTemplate2}
+            style={{ minWidth: "150px" }}
+          />
+
           <Column field="status" header="Status" body={statusBodyTemplate} />
-          {/* <Column field="action" header="Action" body={actionBodyTemplate} /> */}
+          <Column field="action" header="Update" body={actionButton} />
         </DataTable>
+
+        <UpdateStatus
+          updateData={updateData}
+          showForm={showForm}
+          hideModal={hideModal}
+        />
       </div>
     </div>
   );
