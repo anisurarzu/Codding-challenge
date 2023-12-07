@@ -3,11 +3,10 @@ import { NewAppContext } from "../../App";
 import Loader from "../../components/Loader/Loader";
 import Progress from "../../components/Progress/Progress";
 import useAuth from "../../hooks/useAuth";
-import Payment from "../../Pages/Payment/Payment";
 
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-// import { Rating } from "primereact/rating";
+
 import { Button } from "primereact/button";
 import { toast } from "react-toastify";
 import { splitButtonTemp } from "../../components/SplitButton/SplitButtonTemp";
